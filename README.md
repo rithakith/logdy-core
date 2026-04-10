@@ -31,7 +31,7 @@ Logdy is a lightweight, single-binary log viewer that works just like `grep`, `a
 ### Standalone use
 ```bash
 # Use with any shell command
-$ tail -f file.log | logdy
+$ tail -f file.log | logdy-rk
 WebUI started, visit http://localhost:8080
 
 # Read log files
@@ -181,16 +181,32 @@ go build
 ```
 
 ## Releasing
-For a cross architecture build use `gox`. This will generate multiple binaries (in `bin/` dir) for specific architectures, don't forget to update `main.Version` tag.
+
+Releases are now automated using **GoReleaser** and **GitHub Actions**.
+
+### How to release a new version
+
+To trigger a new release:
+1. Ensure your changes are committed and pushed to `main`.
+2. Create a new git tag with the version (must start with `v`):
+   ```bash
+   git tag v0.17.2-rk
+   git push origin v0.17.2-rk
+   ```
+3. GitHub Actions will automatically:
+   - Run tests.
+   - Cross-compile binaries for Windows, Linux, and macOS.
+   - Create a new GitHub Release.
+   - Upload the binaries and checksums to the release.
+
+You can monitor the progress in the **Actions** tab of the repository.
+
+### Manual Cross-platform Build (Optional)
+
+If you still want to build binaries manually for all platforms without creating a GitHub release, you can use `goreleaser` locally:
+
 ```bash
-gox \
-    -ldflags "-X 'main.Version=x.x.x'" \
-    -output="bin/{{.Dir}}_{{.OS}}_{{.Arch}}" \
-    -osarch="linux/amd64 windows/386 windows/amd64 darwin/amd64 darwin/arm64 linux/arm64"
+goreleaser build --clean --snapshot
 ```
 
-Once it's ready, publish the binaries in a new Github release. Again, don't forget to update the version.
-
-```bash
-ghr vx.x.x bin/
-```
+The resulting binaries will be in the `dist/` directory.

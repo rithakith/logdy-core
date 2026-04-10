@@ -16,7 +16,7 @@ import (
 	"github.com/logdyhq/logdy-core/modes"
 )
 
-var Version = "0.0.0"
+var Version = "0.17.2-rk"
 
 var config *http.Config
 
